@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:social_app/bloc/bloc_home/home_cubit.dart';
+import 'package:social_app/screens/chat_send_get_message_screen.dart';
 
-Widget chatItemView() {
-  return const ListTile(
-    title: Text('Mohammed Khalid'),
+Widget chatItemView({
+  required HomeCubit bloc,
+  required index,
+}) {
+  return ListTile(
+    onTap: () {
+      Get.to(
+        ChatSendGetMessageScreen(
+          user: bloc.userList[index],
+        ),
+      );
+    },
+    title: Text(bloc.userList[index].username),
     leading: CircleAvatar(
       radius: 25,
-      backgroundImage: NetworkImage('https://img.freepik.com/free-photo/portrait-beautiful-young-woman-standing-grey-wall_231208-10760.jpg?w=1380&t=st=1692303032~exp=1692303632~hmac=ed6bea0bcc3b2ba52ff79602f9570231857667b27cd3c3d043fee5aabc92e844'),
+      backgroundImage: NetworkImage(bloc.userList[index].image),
     ),
   );
 }

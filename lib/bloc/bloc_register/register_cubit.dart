@@ -34,21 +34,18 @@ class RegisterCubit extends Cubit<RegisterState> {
     emit(RegisterVisibilityPass());
   }
 
-  Username get username {
-    Username username = Username(
-      username : usernameController.text,
-      email :emailController.text,
-      phone :phoneController.text,
-      image :'https://img.freepik.com/free-photo/bearded-man-denim-shirt-round-glasses_273609-11770.jpg?size=626&ext=jpg&ga=GA1.2.735232748.1691787083&semt=sph',
-      cover : 'https://img.freepik.com/free-photo/emotional-bearded-male-has-surprised-facial-expression-astonished-look-dressed-white-shirt-with-red-braces-points-with-index-finger-upper-right-corner_273609-16001.jpg?size=626&ext=jpg&ga=GA1.2.735232748.1691787083&semt=sph',
-      bio :'write your bio...',
-    );
-    return username;
-  }
 
   void register() async {
     bool register =
-        await FBAuth.registerUser(username, passwordController.text);
+        await FBAuth.registerUser(
+          password: passwordController.text,
+          name : usernameController.text,
+          email :emailController.text,
+          phone :phoneController.text,
+          image :'https://img.freepik.com/free-photo/bearded-man-denim-shirt-round-glasses_273609-11770.jpg?size=626&ext=jpg&ga=GA1.2.735232748.1691787083&semt=sph',
+          cover : 'https://img.freepik.com/free-photo/emotional-bearded-male-has-surprised-facial-expression-astonished-look-dressed-white-shirt-with-red-braces-points-with-index-finger-upper-right-corner_273609-16001.jpg?size=626&ext=jpg&ga=GA1.2.735232748.1691787083&semt=sph',
+          bio :'write your bio...',
+        );
     if (register) {
       emit(RegisterSuccess());
     } else {

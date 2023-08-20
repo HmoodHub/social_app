@@ -1,7 +1,8 @@
 class Username {
-  late String username, email, phone, image, cover, bio;
+  late String id,username, email, phone, image, cover, bio;
 
   Username({
+    required this.id,
     required this.username,
     required this.email,
     required this.phone,
@@ -12,6 +13,7 @@ class Username {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {};
+    map['id'] = id;
     map['username'] = username;
     map['email'] = email;
     map['phone'] = phone;
@@ -22,6 +24,7 @@ class Username {
   }
 
   Username.fromMap(Map<String, dynamic> map) {
+    id = map['id'];
     username = map['username'];
     email = map['email'];
     phone = map['phone'];

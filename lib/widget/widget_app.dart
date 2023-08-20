@@ -18,7 +18,7 @@ class WidgetApp {
       controller: controller,
       keyboardType: textInputType,
       decoration: InputDecoration(
-        hintText :hint,
+        hintText: hint,
         label: label,
         border: border ?? borderTextField(borderRadius: borderRadius),
         fillColor: colorFill,
@@ -32,13 +32,14 @@ class WidgetApp {
     );
   }
 
-  InputBorder borderTextField({required double borderRadius}){
+  InputBorder borderTextField({required double borderRadius}) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(borderRadius),
       ),
     );
   }
+
   Widget buttonApp({
     required void Function()? onPress,
     required Color foregroundColor,
@@ -48,6 +49,7 @@ class WidgetApp {
     required double height,
     double borderRadius = 5,
     required Widget childButton,
+    BorderRadiusGeometry? border,
   }) {
     return ElevatedButton(
       onPressed: onPress,
@@ -57,21 +59,26 @@ class WidgetApp {
         elevation: elevation,
         minimumSize: Size(width, height),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(borderRadius),
-          ),
+          borderRadius: border ?? borderButton(borderRadius),
         ),
       ),
       child: childButton,
     );
   }
 
+  BorderRadiusGeometry borderButton(borderRadius) {
+    return BorderRadius.all(
+      Radius.circular(borderRadius),
+    );
+  }
+
   PreferredSizeWidget? appBarApp({
-    String? title,
+    Widget? title,
     List<Widget>? action,
   }) {
     return AppBar(
-      title: Text('$title'),
+      titleSpacing: 0,
+      title: title,
       actions: action,
       centerTitle: true,
       leading: IconButton(

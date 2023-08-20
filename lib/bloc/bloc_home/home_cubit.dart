@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 import 'package:social_app/firebase/auth/fb_auth.dart';
 import 'package:social_app/firebase/firestore/fb_store.dart';
+import 'package:social_app/models/chat_message.dart';
 import 'package:social_app/models/new_post_model.dart';
 import 'package:social_app/models/username_model.dart';
 import 'package:social_app/screens/chat_screen.dart';
@@ -30,11 +31,11 @@ class HomeCubit extends Cubit<HomeState> {
 
   late Username username;
 
-  // late Post post;
   late TextEditingController profileNameController;
   late TextEditingController profileBioController;
   late TextEditingController profilePhoneController;
   late TextEditingController writeOnPostController;
+  late TextEditingController sendMessageToFriend;
   List<Post> posts = [];
   List<int> likeNumber = [];
 
@@ -53,11 +54,13 @@ class HomeCubit extends Cubit<HomeState> {
       'Users',
       'Setting',
     ];
-    username = Username.fromMap(await FBAuth.getDataUser());
+    username = Username.fromMap(
+        await FBAuth.getDataUser(id: SharedPref().userId ?? ''));
     profileBioController = TextEditingController(text: username.bio);
     profileNameController = TextEditingController(text: username.username);
     profilePhoneController = TextEditingController(text: username.phone);
     writeOnPostController = TextEditingController();
+    sendMessageToFriend = TextEditingController();
     posts = await FBStore.getDataPosts();
     likeNumber = FBStore.likesNum;
     emit(HomeInitial());
@@ -67,10 +70,15 @@ class HomeCubit extends Cubit<HomeState> {
 
   void changeBottomNav(int value) {
     if (value == 2) {
+      print(username.id);
       emit(HomeChangeBottomNavToPost());
     } else {
       currentIndex = value;
       emit(HomeChangeBottomNav());
+    }
+    if (value == 1) {
+      allUsers();
+      emit(HomeChangeBottomNavGetAllUser());
     }
   }
 
@@ -110,28 +118,26 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  Username get userUpdate {
-    Username user = Username(
+  void updateProfile() async {
+    Username updateProfileUser = Username(
+      id: username.id,
       username: profileNameController.text,
+      email: username.email,
       phone: profilePhoneController.text,
-      bio: profileBioController.text,
       image: FBStore.urlImageProfile ?? username.image,
       cover: FBStore.urlImageCover ?? username.cover,
-      email: username.email,
+      bio: profileBioController.text,
     );
-    return user;
-  }
-
-  void updateProfile() async {
     emit(HomeUpdateProfileLoading());
     FBStore.uploadCoverImage(
       coverImage: coverImage,
     ).then((value) {
       FBStore.uploadProfileImage(profileImage: profileImage).then((value) {
-        FBAuth.updateProfile(userModel: userUpdate).then((value) async {
+        FBAuth.updateProfile(userModel: updateProfileUser).then((value) async {
           print('${FBStore.urlImageProfile}');
           print('${FBStore.urlImageCover}');
-          username = Username.fromMap(await FBAuth.getDataUser());
+          username =
+              Username.fromMap(await FBAuth.getDataUser(id: username.id));
           value
               ? emit(HomeUpdateProfileSuccess())
               : emit(HomeUpdateProfileError());
@@ -170,7 +176,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   Post get post {
     Post post = Post(
-      id: SharedPref().userId ?? '',
+      id: username.id,
       username: username.username,
       image: username.image,
       content: writeOnPostController.text,
@@ -183,7 +189,7 @@ class HomeCubit extends Cubit<HomeState> {
   void createNewPost() async {
     emit(HomeCreateNewPostLoading());
     FBStore.uploadPostImage(postImage: postImage).then((value) {
-      FBStore.createNewPost(post: post).then((value) async{
+      FBStore.createNewPost(post: post).then((value) async {
         if (value) {
           posts = await FBStore.getDataPosts();
           emit(HomeCreateNewPostSuccess());
@@ -201,12 +207,64 @@ class HomeCubit extends Cubit<HomeState> {
     });
   }
 
-  void likePosts({required index})async{
+  void likePosts({required index}) async {
     bool liked = await FBStore.postsLike(index: index);
     if (liked) {
       emit(HomeLikePostSuccess());
-    }  else{
+    } else {
       emit(HomeLikePostError());
+    }
+  }
+
+  List<Username> userList = [];
+
+  void allUsers() async {
+    emit(HomeGetAllUserLoading());
+    userList = await FBStore.getAllUser();
+    if (userList.isNotEmpty) {
+      emit(HomeGetAllUserSuccess());
+    } else {
+      emit(HomeGetAllUserError());
+    }
+  }
+
+  void sendMessage({required String receiveId}) async {
+    ChatMessage message = ChatMessage(
+      dateTime: DateTime.now().toString(),
+      senderId: username.id,
+      receiverId: receiveId,
+      message: sendMessageToFriend.text,
+    );
+    bool send1 = await FBStore.sendMessage1(
+      myId: username.id,
+      receiverId: receiveId,
+      chatMessage: message,
+    );
+    bool send2 = await FBStore.sendMessage2(
+      myId: username.id,
+      receiverId: receiveId,
+      chatMessage: message,
+    );
+
+    if (send1) {
+      if (send2) {
+        emit(HomeSendMessageSuccess());
+      } else {
+        emit(HomeSendMessageError());
+      }
+    } else {
+      emit(HomeSendMessageError());
+    }
+  }
+
+  List<ChatMessage> messages = <ChatMessage>[];
+
+  void getMessages({required String receiverId}) async {
+    messages = await FBStore.getMessage(myId: username.id, receiverId: receiverId);
+    if (messages.isNotEmpty) {
+      emit(HomeGetMessageSuccess());
+    } else{
+      emit(HomeGetMessageSuccess());
     }
   }
 }

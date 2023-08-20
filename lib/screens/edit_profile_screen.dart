@@ -19,7 +19,7 @@ class EditProfileScreen extends StatelessWidget {
         var model = bloc.username;
         return Scaffold(
           appBar: WidgetApp().appBarApp(
-            title: 'Edit profile',
+            title: Text('Edit profile'),
             action: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),

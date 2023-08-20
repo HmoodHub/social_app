@@ -5,7 +5,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:social_app/models/chat_message.dart';
 import 'package:social_app/models/new_post_model.dart';
+import 'package:social_app/models/username_model.dart';
 import 'package:social_app/shared_pref/shared_pref.dart';
 
 class FBStore {
@@ -94,4 +96,76 @@ class FBStore {
         .catchError((onError) => false);
   }
 
+  static Future<List<Username>> getAllUser() async {
+    QuerySnapshot snapshot = await _firestore.collection('User').get();
+    List<Username> usersList = <Username>[];
+    for (var element in snapshot.docs) {
+      if (element.id != SharedPref().userId) {
+        usersList.add(Username.fromMap(element.data() as Map<String, dynamic>));
+      }
+    }
+    if (usersList.isNotEmpty) {
+      return usersList;
+    }
+    return [];
+  }
+
+  static Future<bool> sendMessage1({
+    required String myId,
+    required String receiverId,
+    required ChatMessage chatMessage,
+  }) async {
+    return _firestore
+        .collection('User')
+        .doc(myId)
+        .collection('Chat')
+        .doc(receiverId)
+        .collection('messages')
+        .add(chatMessage.toMap())
+        .then((value) => true)
+        .catchError((onError) {
+      print(onError.toString());
+      return false;
+    });
+  }
+
+  static Future<bool> sendMessage2({
+    required String myId,
+    required String receiverId,
+    required ChatMessage chatMessage,
+  }) async {
+    return _firestore
+        .collection('User')
+        .doc(receiverId)
+        .collection('Chat')
+        .doc(myId)
+        .collection('messages')
+        .add(chatMessage.toMap())
+        .then((value) => true)
+        .catchError((onError) {
+      print(onError.toString());
+      return false;
+    });
+  }
+
+  static Future<List<ChatMessage>> getMessage({
+    required String myId,
+    required String receiverId,
+  }) async{
+    List<ChatMessage> messages = <ChatMessage>[];
+    _firestore
+        .collection('User')
+        .doc(myId)
+        .collection('Chat')
+        .doc(receiverId)
+        .collection('messages')
+        .orderBy('dateTime')
+        .snapshots()
+        .listen((event) {
+      for (var element in event.docs) {
+        messages.add(ChatMessage.fromMap(element.data()));
+      }
+    });
+  return messages;
+  }
 }

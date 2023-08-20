@@ -26,7 +26,7 @@ class NewPostScreen extends StatelessWidget {
         var userModel = bloc.username;
         return Scaffold(
           appBar: WidgetApp().appBarApp(
-            title: 'Create Post',
+            title: Text('Create Post'),
             action: [
               TextButton(
                 style: TextButton.styleFrom(

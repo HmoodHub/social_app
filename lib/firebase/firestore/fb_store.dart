@@ -148,24 +148,19 @@ class FBStore {
     });
   }
 
-  static Future<List<ChatMessage>> getMessage({
-    required String myId,
-    required String receiverId,
-  }) async{
-    List<ChatMessage> messages = <ChatMessage>[];
-    _firestore
+
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getMessages({
+    required myId,
+    required yourId,
+  }) {
+    return _firestore
         .collection('User')
         .doc(myId)
         .collection('Chat')
-        .doc(receiverId)
+        .doc(yourId)
         .collection('messages')
         .orderBy('dateTime')
-        .snapshots()
-        .listen((event) {
-      for (var element in event.docs) {
-        messages.add(ChatMessage.fromMap(element.data()));
-      }
-    });
-  return messages;
+        .snapshots();
   }
 }

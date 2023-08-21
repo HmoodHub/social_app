@@ -248,6 +248,7 @@ class HomeCubit extends Cubit<HomeState> {
 
     if (send1) {
       if (send2) {
+        sendMessageToFriend.clear();
         emit(HomeSendMessageSuccess());
       } else {
         emit(HomeSendMessageError());
@@ -257,14 +258,4 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  List<ChatMessage> messages = <ChatMessage>[];
-
-  void getMessages({required String receiverId}) async {
-    messages = await FBStore.getMessage(myId: username.id, receiverId: receiverId);
-    if (messages.isNotEmpty) {
-      emit(HomeGetMessageSuccess());
-    } else{
-      emit(HomeGetMessageSuccess());
-    }
-  }
 }

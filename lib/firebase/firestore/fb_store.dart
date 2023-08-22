@@ -148,8 +148,6 @@ class FBStore {
     });
   }
 
-
-
   static Stream<QuerySnapshot<Map<String, dynamic>>> getMessages({
     required myId,
     required yourId,
@@ -160,7 +158,7 @@ class FBStore {
         .collection('Chat')
         .doc(yourId)
         .collection('messages')
-        .orderBy('dateTime')
+        .orderBy('dateTime', descending: true)
         .snapshots();
   }
 }

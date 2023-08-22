@@ -11,13 +11,14 @@ class FBAuth {
 
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  static UserCredential? userCredential;
+  static UserCredential? userCredentialSignIn;
+  static UserCredential? userCredentialSignUp;
 
   static Future<bool> loginUser(email, password) async {
     return _auth
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
-      SharedPref().setUserId(value.user?.uid);
+      userCredentialSignIn ??= value;
       return true;
     }).catchError((onError) => false);
   }
@@ -35,7 +36,7 @@ class FBAuth {
     return _auth
         .createUserWithEmailAndPassword(email: email, password: password)
         .then((value) {
-      userCredential ??= value;
+      userCredentialSignUp ??= value;
       createUser(
         name: name,
         email: email,
@@ -43,7 +44,7 @@ class FBAuth {
         image: image,
         cover: cover,
         bio: bio,
-        uid: userCredential!.user!.uid,
+        uid: userCredentialSignUp!.user!.uid,
       );
       return true;
     }).catchError((onError) => false);

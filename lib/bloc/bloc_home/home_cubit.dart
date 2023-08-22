@@ -54,8 +54,13 @@ class HomeCubit extends Cubit<HomeState> {
       'Users',
       'Setting',
     ];
-    username = Username.fromMap(
-        await FBAuth.getDataUser(id: SharedPref().userId ?? ''));
+    if (SharedPref().userId != null) {
+      final userId = SharedPref().userId;
+      final dataUser = await FBAuth.getDataUser(id: userId!);
+      if (dataUser != null) {
+        username = Username.fromMap(dataUser);
+      }
+    }
     profileBioController = TextEditingController(text: username.bio);
     profileNameController = TextEditingController(text: username.username);
     profilePhoneController = TextEditingController(text: username.phone);
@@ -258,4 +263,6 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+
+  List<ChatMessage> messages = [];
 }

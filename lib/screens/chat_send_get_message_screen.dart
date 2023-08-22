@@ -10,6 +10,8 @@ import 'package:social_app/models/username_model.dart';
 import 'package:social_app/themes/themes.dart';
 import 'package:social_app/widget/widget_app.dart';
 
+import '../models/chat_message.dart';
+
 class ChatSendGetMessageScreen extends StatelessWidget {
   ChatSendGetMessageScreen({required this.user, super.key});
 
@@ -19,8 +21,7 @@ class ChatSendGetMessageScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     HomeCubit bloc = HomeCubit.get(context);
     return BlocConsumer<HomeCubit, HomeState>(
-      listener: (context, state) {
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
           backgroundColor: Colors.white,
@@ -50,6 +51,7 @@ class ChatSendGetMessageScreen extends StatelessWidget {
                 Expanded(
                   child: messageItems(bloc, user.id),
                 ),
+                const SizedBox(height: 10,),
                 Row(
                   children: [
                     Expanded(
@@ -68,9 +70,10 @@ class ChatSendGetMessageScreen extends StatelessWidget {
                       ),
                     ),
                     WidgetApp().buttonApp(
-                      onPress: () {
-                        bloc.sendMessage(receiveId: user.id);
-                      },
+                      onPress: () =>
+                          bloc.sendMessageToFriend.text.trim().isNotEmpty
+                              ? bloc.sendMessage(receiveId: user.id)
+                              : null,
                       foregroundColor: Colors.black,
                       backgroundColor: HexColor('#4FC0D0'),
                       width: 50,
@@ -108,19 +111,23 @@ Widget messageItems(HomeCubit bloc, id2) {
       if (snapshot.connectionState == ConnectionState.waiting) {
         return Container();
       } else {
-        final docs = snapshot.data!.docs;
+        bloc.messages.clear();
+        for (var element in snapshot.data!.docs) {
+          bloc.messages.add(ChatMessage.fromMap(element.data()));
+        }
         return ListView.separated(
+          reverse: true,
           separatorBuilder: (context, index) => const SizedBox(
             height: 10,
           ),
           physics: const BouncingScrollPhysics(),
           itemBuilder: (context, index) {
-            if (bloc.username.id == docs[index]['senderId']) {
+            if (bloc.username.id == bloc.messages[index].senderId) {
               return Align(
                 alignment: Alignment.topRight,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   decoration: BoxDecoration(
                     color: Themes.bg,
                     borderRadius: const BorderRadius.only(
@@ -130,7 +137,7 @@ Widget messageItems(HomeCubit bloc, id2) {
                     ),
                   ),
                   child: Text(
-                    docs[index]['message'],
+                    bloc.messages[index].message,
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
                 ),
@@ -152,14 +159,14 @@ Widget messageItems(HomeCubit bloc, id2) {
                     ),
                   ),
                   child: Text(
-                    docs[index]['message'],
+                    bloc.messages[index].message,
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
                 ),
               );
             }
           },
-          itemCount: docs.length,
+          itemCount: bloc.messages.length,
         );
       }
     },

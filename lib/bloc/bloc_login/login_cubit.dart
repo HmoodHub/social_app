@@ -31,9 +31,8 @@ class LoginCubit extends Cubit<LoginState> {
 
   void login()async{
     bool login = await FBAuth.loginUser(emailController.text, passwordController.text);
-
     if(login){
-      id = SharedPref().userId;
+      SharedPref().setUserId(FBAuth.userCredentialSignIn?.user?.uid);
       emit(LoginSuccess());
     }else{
       emit(LoginError());

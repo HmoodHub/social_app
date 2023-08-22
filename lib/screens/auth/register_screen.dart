@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:social_app/bloc/bloc_register/register_cubit.dart';
 import 'package:social_app/bloc/bloc_register/register_cubit.dart';
+import 'package:social_app/screens/auth/login_screen.dart';
 import 'package:social_app/widget/widget_app.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -15,7 +16,7 @@ class RegisterScreen extends StatelessWidget {
       listener: (context, state) {
         // TODO: implement listener
         if (state is RegisterSuccess) {
-          Get.back();
+         Get.back();
         }
       },
       builder: (context, state) {

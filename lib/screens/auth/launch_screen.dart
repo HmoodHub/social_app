@@ -13,25 +13,20 @@ class LaunchScreen extends StatefulWidget {
 }
 
 class _LaunchScreenState extends State<LaunchScreen> {
-late Widget screen;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    screen = StreamBuilder(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return const HomeScreen();
-        } else {
-          return  const LoginScreen();
-        }
-      },
-    );
     Future.delayed(
       const Duration(seconds: 3),
       () {
-        Get.off(screen);
+        FirebaseAuth.instance.authStateChanges().listen((User? user) {
+          if (user == null) {
+            Get.off(LoginScreen());
+          }  else{
+            Get.off(HomeScreen());
+          }
+        });
       },
     );
   }

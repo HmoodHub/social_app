@@ -43,6 +43,7 @@ dependencies:
   firebase_auth: ^4.7.2
   cloud_firestore: ^4.8.4
   firebase_storage: ^11.2.5
+  firebase_messaging: ^14.6.6
   # Shared pref: 
   shared_preferences: ^2.2.0
   # get widget
@@ -51,6 +52,8 @@ dependencies:
   image_picker: ^1.0.2
   # conditional builder null safety
   conditional_builder_null_safety: ^0.0.6
+  # svg
+  flutter_svg: ^2.0.7
 
 dev_dependencies:
   flutter_test:
@@ -77,6 +80,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - asset/images/
+    - asset/icons/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:social_app/bloc/bloc_home/home_cubit.dart';
 
@@ -136,11 +137,7 @@ Widget postItemView({required Post post, required index, required HomeCubit bloc
                   },
                   child:  Row(
                     children: [
-                      const Icon(
-                        Icons.favorite_border,
-                        color: Colors.red,
-                        size: 19,
-                      ),
+                      SvgPicture.asset('asset/icons/favorite.svg',color: Colors.red,),
                       const SizedBox(
                         width: 5,
                       ),
@@ -156,11 +153,7 @@ Widget postItemView({required Post post, required index, required HomeCubit bloc
                 onTap: () {},
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.comment_outlined,
-                      color: HexColor('#E2D997'),
-                      size: 19,
-                    ),
+                    SvgPicture.asset('asset/icons/body_chat.svg',color: HexColor('#E2D997'),),
                     const SizedBox(
                       width: 5,
                     ),
@@ -204,17 +197,13 @@ Widget postItemView({required Post post, required index, required HomeCubit bloc
                 onTap: () {
                   bloc.likePosts(index: index);
                 },
-                child: const Row(
+                child:  Row(
                   children: [
-                    Icon(
-                      Icons.favorite_border,
-                      color: Colors.red,
-                      size: 19,
-                    ),
-                    SizedBox(
+                    SvgPicture.asset('asset/icons/favorite.svg',color: Colors.red,),
+                    const SizedBox(
                       width: 5,
                     ),
-                    Text(
+                    const Text(
                       'Like',
                       style: TextStyle(fontSize: 13, color: Colors.grey),
                     ),

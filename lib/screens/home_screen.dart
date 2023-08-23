@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:social_app/bloc/bloc_home/home_cubit.dart';
-import 'package:social_app/firebase/auth/fb_auth.dart';
-import 'package:social_app/firebase/firestore/fb_store.dart';
-import 'package:social_app/screens/auth/login_screen.dart';
 import 'package:social_app/screens/new_post_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -28,11 +26,11 @@ class HomeScreen extends StatelessWidget {
             actions: [
               IconButton(
                 onPressed: () {},
-                icon: const Icon(Icons.notifications),
+                icon: SvgPicture.asset('asset/icons/notofication.svg'),
               ),
               IconButton(
                 onPressed: () {},
-                icon: const Icon(Icons.search),
+                icon: SvgPicture.asset('asset/icons/search.svg'),
               ),
             ],
           ),
@@ -40,7 +38,7 @@ class HomeScreen extends StatelessWidget {
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             unselectedItemColor: Colors.black,
-            selectedItemColor: HexColor('#4E6AFF'),
+            selectedItemColor: Colors.red,
             showSelectedLabels:
                 Theme.of(context).bottomNavigationBarTheme.showSelectedLabels,
             showUnselectedLabels:
@@ -49,35 +47,25 @@ class HomeScreen extends StatelessWidget {
             onTap: (value) {
               bloc.changeBottomNav(value);
             },
-            items: const [
+            items:  [
               BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.home,
-                ),
+                icon: SvgPicture.asset('asset/icons/home.svg'),
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.chat,
-                ),
+                icon: SvgPicture.asset('asset/icons/chat.svg'),
                 label: 'Chat',
               ),
               BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.post_add,
-                ),
+                icon: SvgPicture.asset('asset/icons/add_post.svg'),
                 label: 'Post',
               ),
               BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.location_on,
-                ),
+                icon: SvgPicture.asset('asset/icons/location.svg'),
                 label: 'Users',
               ),
               BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.settings,
-                ),
+                icon:SvgPicture.asset('asset/icons/setting.svg',),
                 label: 'Setting',
               ),
             ],

@@ -7,6 +7,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:social_app/bloc/bloc_home/home_cubit.dart';
 import 'package:social_app/bloc/bloc_login/login_cubit.dart';
 import 'package:social_app/bloc/bloc_register/register_cubit.dart';
+import 'package:social_app/firebase/notification/fb_notification.dart';
 import 'package:social_app/screens/auth/launch_screen.dart';
 import 'package:social_app/screens/auth/login_screen.dart';
 import 'package:social_app/screens/home_screen.dart';
@@ -20,6 +21,7 @@ void main() async {
   await Firebase.initializeApp();
   await SharedPref().initPref();
   Bloc.observer = MyBlocObserver();
+  await FBNotification.initNotification();
   runApp(const MyApp());
 }
 
@@ -48,6 +50,7 @@ class MyApp extends StatelessWidget {
           bottomNavigationBarTheme: BottomNavigationBarThemeData(
             backgroundColor: Themes.bg,
             elevation: 0,
+            selectedItemColor: Themes.bg,
             showSelectedLabels: false,
             showUnselectedLabels: false,
           ),
@@ -57,6 +60,7 @@ class MyApp extends StatelessWidget {
             elevation: 0,
             foregroundColor: Colors.black,
           ),
+          useMaterial3: true
         ),
         home:const LaunchScreen(),
       ),

@@ -59,6 +59,8 @@ class HomeGetAllUserLoading extends HomeState {}
 
 class HomeChangeBottomNavGetAllUser extends HomeState {}
 
+class HomeChangeBottomNavGetMapLocation extends HomeState {}
+
 class HomeSendMessageSuccess extends HomeState {}
 
 class HomeSendMessageError extends HomeState {}
@@ -66,3 +68,5 @@ class HomeSendMessageError extends HomeState {}
 class HomeGetMessageSuccess extends HomeState {}
 
 class HomeGetMessageError extends HomeState {}
+
+class HomeGetMapLocation extends HomeState {}

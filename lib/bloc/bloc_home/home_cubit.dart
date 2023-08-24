@@ -4,7 +4,10 @@ import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:location/location.dart';
 import 'package:meta/meta.dart';
 import 'package:social_app/firebase/auth/fb_auth.dart';
 import 'package:social_app/firebase/firestore/fb_store.dart';
@@ -13,6 +16,7 @@ import 'package:social_app/models/new_post_model.dart';
 import 'package:social_app/models/username_model.dart';
 import 'package:social_app/screens/chat_screen.dart';
 import 'package:social_app/screens/feeds_screen.dart';
+import 'package:social_app/screens/home_screen.dart';
 import 'package:social_app/screens/new_post_screen.dart';
 import 'package:social_app/screens/setting_screen.dart';
 import 'package:social_app/shared_pref/shared_pref.dart';
@@ -71,19 +75,24 @@ class HomeCubit extends Cubit<HomeState> {
     emit(HomeInitial());
   }
 
-  int currentIndex = 0;
+  Menu currentIndex = Menu.home;
 
-  void changeBottomNav(int value) {
-    if (value == 2) {
+  void changeBottomNav(Menu value) {
+    print(currentIndex.index);
+    if (value == Menu.addPost) {
       print(username.id);
       emit(HomeChangeBottomNavToPost());
     } else {
       currentIndex = value;
       emit(HomeChangeBottomNav());
     }
-    if (value == 1) {
+    if (value == Menu.chat) {
       allUsers();
       emit(HomeChangeBottomNavGetAllUser());
+    }
+    if (value == Menu.users) {
+      initUsersMap();
+      emit(HomeChangeBottomNavGetMapLocation());
     }
   }
 
@@ -263,6 +272,39 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-
   List<ChatMessage> messages = [];
+
+  // handel Map for users
+  LocationData? currentLocation;
+  final MapController mapController = MapController();
+
+  void initUsersMap() async {
+    Location location = Location();
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+    LocationData locationData;
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        return;
+      }
+    }
+
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    locationData = await location.getLocation();
+    currentLocation = locationData;
+    mapController.move(
+      LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+      10,
+    );
+    emit(HomeGetMapLocation());
+  }
 }

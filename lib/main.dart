@@ -60,7 +60,8 @@ class MyApp extends StatelessWidget {
             elevation: 0,
             foregroundColor: Colors.black,
           ),
-          useMaterial3: true
+          useMaterial3: true,
+          // brightness: Brightness.dark
         ),
         home:const LaunchScreen(),
       ),

@@ -1,19 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:social_app/bloc/bloc_home/home_cubit.dart';
 import 'package:social_app/bloc/bloc_login/login_cubit.dart';
 import 'package:social_app/bloc/bloc_register/register_cubit.dart';
-import 'package:social_app/firebase/notification/fb_notification.dart';
+import 'package:social_app/firebase/notification/fb_notifications.dart';
 import 'package:social_app/screens/auth/launch_screen.dart';
-import 'package:social_app/screens/auth/login_screen.dart';
-import 'package:social_app/screens/home_screen.dart';
 import 'package:social_app/shared_pref/shared_pref.dart';
 import 'package:social_app/themes/themes.dart';
-
 import 'bloc/observer.dart';
 
 void main() async {
@@ -21,7 +16,7 @@ void main() async {
   await Firebase.initializeApp();
   await SharedPref().initPref();
   Bloc.observer = MyBlocObserver();
-  await FBNotification.initNotification();
+  await FbNotification.initNotification();
   runApp(const MyApp());
 }
 

@@ -11,6 +11,7 @@ import 'package:location/location.dart';
 import 'package:meta/meta.dart';
 import 'package:social_app/firebase/auth/fb_auth.dart';
 import 'package:social_app/firebase/firestore/fb_store.dart';
+import 'package:social_app/firebase/notification/fb_notifications.dart';
 import 'package:social_app/models/chat_message.dart';
 import 'package:social_app/models/new_post_model.dart';
 import 'package:social_app/models/username_model.dart';
@@ -25,7 +26,7 @@ import '../../screens/users_screen.dart';
 
 part 'home_state.dart';
 
-class HomeCubit extends Cubit<HomeState> {
+class HomeCubit extends Cubit<HomeState> with FbNotification{
   HomeCubit() : super(HomeInitial());
 
   static HomeCubit get(context) => BlocProvider.of<HomeCubit>(context);
@@ -72,6 +73,9 @@ class HomeCubit extends Cubit<HomeState> {
     sendMessageToFriend = TextEditingController();
     posts = await FBStore.getDataPosts();
     likeNumber = FBStore.likesNum;
+    requestNotificationPermission();
+    initializeForegroundNotificationForAndroid();
+    manageNotificationAction();
     emit(HomeInitial());
   }
 
@@ -96,6 +100,22 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  void onTapPopUpMenu(PopUpMenuButtonItems value)async{
+    switch(value) {
+      case PopUpMenuButtonItems.notification:
+        print('notification');
+        emit(HomePopUpMenuButtonNotification());
+        break;
+      case PopUpMenuButtonItems.logout:
+        print('logout');
+        await FBAuth.logout();
+        emit(HomePopUpMenuButtonLogout());
+        break;
+      default:
+        print('Pop Up Menu closed');
+    }
+
+  }
   var picker = ImagePicker();
   XFile? profileImage;
   XFile? coverImage;

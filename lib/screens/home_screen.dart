@@ -4,8 +4,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:social_app/bloc/bloc_home/home_cubit.dart';
+import 'package:social_app/screens/auth/login_screen.dart';
 import 'package:social_app/screens/new_post_screen.dart';
 import 'package:social_app/themes/themes.dart';
+
+enum PopUpMenuButtonItems {
+  notification,
+  logout,
+}
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -18,6 +24,9 @@ class HomeScreen extends StatelessWidget {
         if (state is HomeChangeBottomNavToPost) {
           Get.to(const NewPostScreen());
         }
+        if (state is HomePopUpMenuButtonLogout) {
+          Get.off(() => const LoginScreen());
+        }
       },
       builder: (context, state) {
         return Scaffold(
@@ -26,13 +35,46 @@ class HomeScreen extends StatelessWidget {
             title: Text(bloc.titles[bloc.currentIndex.index]),
             centerTitle: true,
             actions: [
-              IconButton(
-                onPressed: () {},
-                icon: SvgPicture.asset('asset/icons/notofication.svg'),
-              ),
+              // IconButton(
+              //   onPressed: () {},
+              //   icon: SvgPicture.asset('asset/icons/notofication.svg'),
+              // ),
               IconButton(
                 onPressed: () {},
                 icon: SvgPicture.asset('asset/icons/search.svg'),
+              ),
+              PopupMenuButton(
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                      value: PopUpMenuButtonItems.notification,
+                      child: Row(
+                        children: [
+                          SvgPicture.asset('asset/icons/notofication.svg'),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          const Text('Notification'),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: PopUpMenuButtonItems.logout,
+                      child: Row(
+                        children: [
+                          SvgPicture.asset('asset/icons/logout.svg'),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          const Text('Logout'),
+                        ],
+                      ),
+                    ),
+                  ];
+                },
+                onSelected: (value) {
+                  bloc.onTapPopUpMenu(value);
+                },
               ),
             ],
           ),
@@ -171,7 +213,6 @@ class MyBottomNavBar extends StatelessWidget {
               ),
             ),
           ),
-
         ],
       ),
     );

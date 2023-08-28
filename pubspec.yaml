@@ -44,6 +44,7 @@ dependencies:
   cloud_firestore: ^4.8.4
   firebase_storage: ^11.2.5
   firebase_messaging: ^14.6.6
+  flutter_local_notifications: ^15.1.1
   # Shared pref: 
   shared_preferences: ^2.2.0
   # get widget

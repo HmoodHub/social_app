@@ -9,6 +9,10 @@ class HomeChangeBottomNav extends HomeState {}
 
 class HomeChangeBottomNavToPost extends HomeState {}
 
+class HomePopUpMenuButtonNotification extends HomeState {}
+
+class HomePopUpMenuButtonLogout extends HomeState {}
+
 class HomePickProfileImageSuccess extends HomeState {}
 
 class HomePickProfileImageError extends HomeState {}

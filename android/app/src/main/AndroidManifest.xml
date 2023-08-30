@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
-        android:label="social_app"
+        android:label="social media"
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
         android:name="${applicationName}"
